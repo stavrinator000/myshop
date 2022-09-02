@@ -1,0 +1,150 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}
+    {% if category %}{{ category.title }}{% else %}Products{% endif %}
+{% endblock %}
+{% block content %}
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  place-items: center;
+}
+
+.card__header img {
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  width: 100%;
+}
+
+.card__body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+
+.tag {
+  align-self: flex-start;
+  padding: .25em .75em;
+  border-radius: 1em;
+  font-size: 25px;
+}
+
+.tag + .tag {
+  margin-left: .5em;
+}
+
+.tag-red {
+  background: #cb2d3e;
+  color: #fafafa;
+}
+
+.card__body h4 {
+  font-size: 60px;
+  text-transform: capitalize;
+}
+
+p{
+  font-size: 30px;
+}
+
+.plus, .minus{
+    color: white;
+      height:70px;
+      width: 70px;
+      padding: 5px;
+      text-align: center;
+      font-size: 50px;
+			border:1px solid #ddd;
+			border-radius:4px;
+      display: inline-block;
+      vertical-align: middle;
+  font-weight: bold;
+  background-color: #008CBA;
+}
+.buttoner{
+      height:70px;
+      padding: 5px 10px;
+      color: white;
+      text-align: center;
+      font-size: 50px;
+			border:1px solid #ddd;
+			border-radius:4px;
+      display: inline-block;
+      vertical-align: middle;
+  background-color: #4CAF50;
+  float: right;
+}
+input{
+			height:70px;
+      width:110px;
+      padding: 5px;
+      text-align: center;
+      font-size: 50px;
+			border:1px solid #ddd;
+			border-radius:4px;
+      display: inline-block;
+      vertical-align: middle;
+      }
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script>
+    	$(document).ready(function() {
+			$('.minus').click(function () {
+				var $input = $(this).parent().find('input');
+				var count = parseInt($input.val()) - 1;
+				count = count < 1 ? 1 : count;
+				$input.val(count);
+				$input.change();
+				return false;
+			});
+			$('.plus').click(function () {
+				var $input = $(this).parent().find('input');
+				$input.val(parseInt($input.val()) + 1);
+				$input.change();
+				return false;
+			});
+		});
+</script>
+<div class="product-detail">
+<div class="containersha">
+    <div class="card">
+      <div class="card__header">
+        <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="card__image" class="card__image" width="600">
+      </div>
+      <div class="card__body">
+        <h4>{{ product.name }}</h4>
+        <span class="tag tag-red">{{ product.category }}</span>
+        <p>{{ product.description|linebreaks }}</p>
+        <form action="{% url "cart:cart_add" product.id %}" method="post">
+            <h2>
+                <div class="number">
+	            <button class="minus">-</button>
+	            {{ cart_product_form }}
+	            <button class="plus">+</button>
+                <button type="submit" class="buttoner" value="1">Добавить в корзину</button>
+                </div>
+                {% csrf_token %}
+            </h2>
+
+            <br><br><br>
+            {{ item.quantity }}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

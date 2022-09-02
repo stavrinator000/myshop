@@ -1,0 +1,65 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Продукты{% endif %}
+{% endblock %}
+{% block content %}
+<style>
+.item{
+  margin-bottom: 210px;
+  margin-top: 40px;
+}
+
+.tag {
+  align-self: flex-start;
+  padding: .25em .75em;
+  border-radius: 1em;
+  font-size: 40px;
+  bottom: 0px;
+}
+
+.tag + .tag {
+  margin-left: .5em;
+}
+
+.tag-brown {
+  background: #D1913C;
+background: linear-gradient(to bottom, #FFD194, #D1913C);
+  color: #fafafa;
+}
+
+.item p{
+  font-size: 30px;
+}
+
+h2{
+  font-size: 50px;
+}
+
+a{
+    color: #292929;
+    text-decoration: none;
+}
+</style>
+<div class="scrollmenu">
+          <a href="{% url "shop:product_list" %}">Все продукты</a>
+      {% for c in categories %}
+              <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+      {% endfor %}
+</div>
+<div id="main" class="product-list">
+  <h1>{% if category %}{{ category.name }}{% else %}Products{% endif %}</h1>
+  {% for product in products %}
+  <div class="item">
+    <a href="{{ product.get_absolute_url }}">
+    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+    <h2>{{ product.name }}</h2>
+    <p>{{ product.description|linebreaks }}</p>
+    <span class="tag tag-brown">{{ product.price }} ₽</span></a>
+</div>
+  {% endfor %}
+</div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+
+
+{% endblock %}

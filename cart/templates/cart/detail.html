@@ -1,0 +1,143 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}
+    Your shopping cart
+{% endblock %}
+{% block content %}
+
+    <style>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  place-items: center;
+}
+
+.card__header img {
+  display: flex;
+  flex-wrap: wrap;
+  margin: auto;
+  width: 100%;
+}
+
+.card__body {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+
+.item{
+  margin-bottom: 100px;
+  margin-top: 20px;
+}
+
+.tag {
+  align-self: flex-start;
+  padding: .25em .75em;
+  border-radius: 1em;
+  font-size: 40px;
+  bottom: 0px;
+}
+
+.tag + .tag {
+  margin-left: .5em;
+}
+
+.tag-brown {
+  background: #D1913C;
+background: linear-gradient(to bottom, #FFD194, #D1913C);
+  color: #fafafa;
+}
+
+.item p{
+  font-size: 30px;
+}
+
+.item h1{
+  font-size: 80px;
+  padding-left: 20px;
+}
+
+.card__body h4 {
+  font-size: 60px;
+  text-transform: capitalize;
+}
+
+p{
+  font-size: 30px;
+}
+
+input{
+	    height:100px;
+      width: 200px;
+      padding: 5px;
+      text-align: center;
+      font-size: 50px;
+	border:4px solid #292929;
+      display: inline-block;
+      vertical-align: middle;
+      }
+    </style>
+    <script>
+    	$(document).ready(function() {
+			$('.minus').click(function () {
+				var $input = $(this).parent().find('input');
+				var count = parseInt($input.val()) - 1;
+				count = count < 1 ? 1 : count;
+				$input.val(count);
+				$input.change();
+				return false;
+			});
+			$('.plus').click(function () {
+				var $input = $(this).parent().find('input');
+				$input.val(parseInt($input.val()) + 1);
+				$input.change();
+				return false;
+			});
+		});
+</script>
+    <table class="cart" id="cart">
+        <thead>
+        </thead>
+        <tbody>
+        {% for item in cart %}
+            {% with product=item.product %}
+            <div id="main" class="product-list">
+
+                <div class="item">
+                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+                    <h1>{{ product.name }}</h1>
+                    <br><br>
+                    <form action="{% url "cart:cart_add" product.id %}"method="post">
+                        {{ item.update_quantity_form.quantity }}{{ item.update_quantity_form.update }}
+                        {% csrf_token %}
+                    </form>
+                    <br><br><br><br>
+                    <span class="tag tag-brown">{{ item.total_price }} ₽</span>
+                    <!--<a href="{% url "cart:cart_remove" product.id%}">Убрать</a>-->
+                </div>
+            </div>
+
+            {% endwith %}
+        {% endfor %}
+        <tr class="total">
+            <td>Итоговая цена покупки</td>
+            <td colspan="4"></td>
+            <td class="num">{{ cart.get_total_price }} ₽</td>
+        </tr>
+        </tbody>
+    </table>
+    <br><br><br>
+    <p class="text-right">
+        <a href="{% url "shop:product_list" %}" class="button">Продолжить покупки</a>
+        <a href="{% url "orders:order_create" %}" class="button" type="submit">Перейти к оформлению</a>
+    </p>
+    <script>window.screen.lockOrientation('portrait');</script>
+{% endblock %}
